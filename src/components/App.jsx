@@ -1,18 +1,15 @@
 import { useEffect, useState } from 'react'
+import { getRandomFact } from '../services/facts'
+import { getImageUrlFromFact } from '../services/images'
 
-const { VITE_CATS_FACTS_API_URL, VITE_CATS_IMAGES_API_URL_PREFIX, VITE_CATS_IMAGES_API_URL_SUFFIX } = import.meta.env
+const { VITE_CATS_IMAGES_API_URL_PREFIX } = import.meta.env
 
 export const App = () => {
   const [fact, setFact] = useState()
   const [imageUrl, setImageUrl] = useState()
 
   useEffect(() => {
-    fetch(VITE_CATS_FACTS_API_URL).then(res =>
-      res.json()
-    ).then(data => {
-      const { fact } = data
-      setFact(fact)
-    })
+    getRandomFact().then(newFact => setFact(newFact))
   }, [])
 
   useEffect(() => {
@@ -20,15 +17,18 @@ export const App = () => {
 
     const threeFirstWords = fact?.split(' ', 3).join(' ')
 
-    fetch(`${VITE_CATS_IMAGES_API_URL_PREFIX}${VITE_CATS_IMAGES_API_URL_SUFFIX}${threeFirstWords}?size=50&color=red&json=true`).then(res => res.json()).then(data => {
-      const { url } = data
-      setImageUrl(url)
-    })
+    getImageUrlFromFact(threeFirstWords).then(url => setImageUrl(url))
   }, [fact])
+
+  const handleClick = async () => {
+    const newFact = await getRandomFact()
+    setFact(newFact)
+  }
 
   return (
     <main>
       <h1> Cats app </h1>
+      <button onClick={handleClick}>Get new random fact</button>
       {fact && <p>{fact}</p>}
       {imageUrl && <img src={`${VITE_CATS_IMAGES_API_URL_PREFIX}${imageUrl}`} alt='An image of a cat from cataas.com' />}
     </main>
