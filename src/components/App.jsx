@@ -1,5 +1,7 @@
+import './App.css'
 import { useCatImageUrl } from '../hooks/useCatImageUrl'
 import { useCatFact } from '../hooks/useCatFact'
+
 
 const { VITE_CATS_IMAGES_API_URL_PREFIX } = import.meta.env
 
