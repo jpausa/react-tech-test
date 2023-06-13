@@ -12,15 +12,19 @@ export const App = () => {
     ).then(data => {
       const { fact } = data
       setFact(fact)
-
-      const threeFirstWords = fact?.split(' ', 3).join(' ')
-
-      fetch(`${VITE_CATS_IMAGES_API_URL_PREFIX}${VITE_CATS_IMAGES_API_URL_SUFFIX}${threeFirstWords}?size=50&color=red&json=true`).then(res => res.json()).then(data => {
-        const { url } = data
-        setImageUrl(url)
-      })
     })
   }, [])
+
+  useEffect(() => {
+    if (!fact) return
+
+    const threeFirstWords = fact?.split(' ', 3).join(' ')
+
+    fetch(`${VITE_CATS_IMAGES_API_URL_PREFIX}${VITE_CATS_IMAGES_API_URL_SUFFIX}${threeFirstWords}?size=50&color=red&json=true`).then(res => res.json()).then(data => {
+      const { url } = data
+      setImageUrl(url)
+    })
+  }, [fact])
 
   return (
     <main>
