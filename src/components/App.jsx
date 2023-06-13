@@ -1,28 +1,14 @@
-import { useEffect, useState } from 'react'
-import { getRandomFact } from '../services/facts'
-import { getImageUrlFromFact } from '../services/images'
+import { useCatImageUrl } from '../hooks/useCatImageUrl'
+import { useCatFact } from '../hooks/useCatFact'
 
 const { VITE_CATS_IMAGES_API_URL_PREFIX } = import.meta.env
 
 export const App = () => {
-  const [fact, setFact] = useState()
-  const [imageUrl, setImageUrl] = useState()
-
-  useEffect(() => {
-    getRandomFact().then(newFact => setFact(newFact))
-  }, [])
-
-  useEffect(() => {
-    if (!fact) return
-
-    const threeFirstWords = fact?.split(' ', 3).join(' ')
-
-    getImageUrlFromFact(threeFirstWords).then(url => setImageUrl(url))
-  }, [fact])
+  const { fact, refreshFact } = useCatFact()
+  const { imageUrl } = useCatImageUrl({ fact })
 
   const handleClick = async () => {
-    const newFact = await getRandomFact()
-    setFact(newFact)
+    refreshFact()
   }
 
   return (
